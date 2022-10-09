@@ -2,18 +2,17 @@ package service
 
 import (
 	"context"
-
+	"github.com/phungvhbui/go-archi/internal/mapper"
 	"github.com/phungvhbui/go-archi/internal/model/dto"
 	"github.com/phungvhbui/go-archi/internal/model/entity"
-	"github.com/phungvhbui/go-archi/internal/model/mapper"
 	"github.com/phungvhbui/go-archi/internal/repository"
 )
 
 type OrganizationService struct {
-	repository *repository.OrganizationRepository
+	repository repository.OrganizationRepository
 }
 
-func NewOrganizationService(repository *repository.OrganizationRepository) *OrganizationService {
+func NewOrganizationService(repository repository.OrganizationRepository) *OrganizationService {
 	return &OrganizationService{
 		repository: repository,
 	}

@@ -7,17 +7,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type OrganizationController struct {
-	service *service.OrganizationService
+type UserController struct {
+	service *service.UserService
 }
 
-func NewOrganizationController(service *service.OrganizationService) *OrganizationController {
-	return &OrganizationController{
+func NewUserController(service *service.UserService) *UserController {
+	return &UserController{
 		service: service,
 	}
 }
 
-func (c OrganizationController) GetAll(ctx *gin.Context) {
+func (c UserController) GetAll(ctx *gin.Context) {
 	dto, err := c.service.GetAll(ctx.Request.Context())
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, err)
@@ -26,10 +26,10 @@ func (c OrganizationController) GetAll(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, dto)
 }
 
-// func (c OrganizationController) Get(ctx *gin.Context) {
+// func (c UserController) Get(ctx *gin.Context) {
 // 	ctx.JSON(http.StatusOK, c.service.Get())
 // }
 
-// func (c OrganizationController) Create(ctx *gin.Context) {
+// func (c UserController) Create(ctx *gin.Context) {
 // 	ctx.JSON(http.StatusOK, c.service.Get())
 // }

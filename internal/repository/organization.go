@@ -5,14 +5,18 @@ import (
 	"gorm.io/gorm"
 )
 
-type OrganizationRepository struct {
-	gormRepository[entity.Organization]
+type OrganizationRepository interface {
+	Repository[entity.Organization]
 }
 
-func NewOrganizationRepository(db *gorm.DB) *OrganizationRepository {
-	return &OrganizationRepository{
-		gormRepository: gormRepository[entity.Organization]{
-			db: db,
+type organizationRepository struct {
+	GormRepository[entity.Organization]
+}
+
+func NewOrganizationRepository(db *gorm.DB) *organizationRepository {
+	return &organizationRepository{
+		GormRepository: GormRepository[entity.Organization]{
+			DB: db,
 		},
 	}
 }

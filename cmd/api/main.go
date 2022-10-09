@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/phungvhbui/go-archi/internal/connector"
 	"github.com/phungvhbui/go-archi/internal/controller"
-
 	"github.com/phungvhbui/go-archi/internal/repository"
 	"github.com/phungvhbui/go-archi/internal/service"
 	"github.com/rs/zerolog/log"
@@ -12,7 +11,6 @@ import (
 
 func NewRouter() *gin.Engine {
 	router := gin.New()
-	//router.SetTrustedProxies([]string{"localhost"})
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
@@ -29,17 +27,27 @@ func NewRouter() *gin.Engine {
 	}
 
 	// System deps
+	//transactor := repository.New(db)
+	userRepository := repository.NewUserRepository(db)
+	userService := service.NewUserService(userRepository)
+
 	organizationRepository := repository.NewOrganizationRepository(db)
 	organizationService := service.NewOrganizationService(organizationRepository)
 
 	v1 := router.Group("v1")
 	{
-		organizationGroup := v1.Group("organizations")
+		userGroup := v1.Group("user")
 		{
-			organizationController := controller.NewOrganizationService(organizationService)
-			organizationGroup.GET("/", organizationController.GetAll)
+			userController := controller.NewUserController(userService)
+			userGroup.GET("/", userController.GetAll)
 			// organizationGroup.GET("/:id", organizationController.Get)
 			// organizationGroup.POST("/", organizationController.Create)
+		}
+
+		organizationGroup := v1.Group("organizations")
+		{
+			organizationController := controller.NewOrganizationController(organizationService)
+			organizationGroup.GET("/", organizationController.GetAll)
 		}
 
 	}
@@ -52,5 +60,8 @@ func main() {
 	hostPort := "localhost" + ":" + "3000"
 	log.Info().Msgf("server started at %s", hostPort)
 
-	r.Run(":3000")
+	err := r.Run(":3000")
+	if err != nil {
+		return
+	}
 }
