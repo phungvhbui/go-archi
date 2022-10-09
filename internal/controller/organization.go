@@ -8,10 +8,10 @@ import (
 )
 
 type OrganizationController struct {
-	service *service.OrganizationService
+	service service.OrganizationService
 }
 
-func NewOrganizationController(service *service.OrganizationService) *OrganizationController {
+func NewOrganizationController(service service.OrganizationService) *OrganizationController {
 	return &OrganizationController{
 		service: service,
 	}

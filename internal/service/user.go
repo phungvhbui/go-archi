@@ -9,17 +9,21 @@ import (
 	"github.com/phungvhbui/go-archi/internal/model/entity"
 )
 
-type UserService struct {
+type UserService interface {
+	GetAll(context.Context) ([]dto.UserDTO, error)
+}
+
+type userService struct {
 	repository repository.UserRepository
 }
 
-func NewUserService(repository repository.UserRepository) *UserService {
-	return &UserService{
+func NewUserService(repository repository.UserRepository) *userService {
+	return &userService{
 		repository: repository,
 	}
 }
 
-func (s *UserService) GetAll(ctx context.Context) ([]dto.UserDTO, error) {
+func (s *userService) GetAll(ctx context.Context) ([]dto.UserDTO, error) {
 	entities, err := s.repository.GetAll(ctx)
 	if err != nil {
 		return nil, err

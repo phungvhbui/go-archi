@@ -8,17 +8,21 @@ import (
 	"github.com/phungvhbui/go-archi/internal/repository"
 )
 
-type OrganizationService struct {
+type OrganizationService interface {
+	GetAll(context.Context) ([]dto.OrganizationDTO, error)
+}
+
+type organizationService struct {
 	repository repository.OrganizationRepository
 }
 
-func NewOrganizationService(repository repository.OrganizationRepository) *OrganizationService {
-	return &OrganizationService{
+func NewOrganizationService(repository repository.OrganizationRepository) *organizationService {
+	return &organizationService{
 		repository: repository,
 	}
 }
 
-func (s *OrganizationService) GetAll(ctx context.Context) ([]dto.OrganizationDTO, error) {
+func (s *organizationService) GetAll(ctx context.Context) ([]dto.OrganizationDTO, error) {
 	entities, err := s.repository.GetAll(ctx)
 	if err != nil {
 		return nil, err
