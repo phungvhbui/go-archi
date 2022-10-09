@@ -7,6 +7,6 @@ import (
 
 type User struct {
 	gorm.Model
-	Organizations []Organization `gorm:"many2many:user_organizations;"`
 	AccountUUID   uuid.UUID      `gorm:"<-:create;unique;not null"`
+	Organizations []Organization `gorm:"many2many:user_organizations;"`
 }

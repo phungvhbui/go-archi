@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/phungvhbui/go-archi/internal/connector"
 	"github.com/phungvhbui/go-archi/internal/controller"
+	"github.com/phungvhbui/go-archi/internal/externalservice"
 	"github.com/phungvhbui/go-archi/internal/repository"
 	"github.com/phungvhbui/go-archi/internal/service"
 	"github.com/rs/zerolog/log"
@@ -27,19 +28,23 @@ func NewRouter() *gin.Engine {
 	}
 
 	// System deps
-	//transactor := repository.New(db)
+	stripe := externalservice.NewStripe()
+
+	transactor := repository.New(db)
+
 	userRepository := repository.NewUserRepository(db)
-	userService := service.NewUserService(userRepository)
+	userService := service.NewUserService(userRepository, transactor, stripe)
 
 	organizationRepository := repository.NewOrganizationRepository(db)
 	organizationService := service.NewOrganizationService(organizationRepository)
 
 	v1 := router.Group("v1")
 	{
-		userGroup := v1.Group("user")
+		userGroup := v1.Group("users")
 		{
 			userController := controller.NewUserController(userService)
 			userGroup.GET("/", userController.GetAll)
+			userGroup.POST("/", userController.Create)
 			// organizationGroup.GET("/:id", organizationController.Get)
 			// organizationGroup.POST("/", organizationController.Create)
 		}
