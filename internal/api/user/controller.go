@@ -1,18 +1,18 @@
-package controller
+package user
 
 import (
-	"github.com/phungvhbui/go-archi/internal/model/dto"
-	"github.com/phungvhbui/go-archi/internal/service"
 	"net/http"
+
+	"github.com/phungvhbui/go-archi/internal/model/dto"
 
 	"github.com/gin-gonic/gin"
 )
 
 type UserController struct {
-	service service.UserService
+	service UserService
 }
 
-func NewUserController(service service.UserService) *UserController {
+func NewUserController(service UserService) *UserController {
 	return &UserController{
 		service: service,
 	}

@@ -2,28 +2,29 @@ package repository
 
 import (
 	"context"
-	"github.com/phungvhbui/go-archi/internal/model/entity"
+
+	"github.com/phungvhbui/go-archi/internal/datastore/model"
 	"gorm.io/gorm"
 )
 
 type OrganizationRepository interface {
-	Repository[entity.Organization]
-	UpdateStripeId(context.Context, *entity.Organization, string) error
+	Repository[model.Organization]
+	UpdateStripeId(context.Context, *model.Organization, string) error
 }
 
 type organizationRepository struct {
-	GormRepository[entity.Organization]
+	GormRepository[model.Organization]
 }
 
 func NewOrganizationRepository(db *gorm.DB) *organizationRepository {
 	return &organizationRepository{
-		GormRepository: GormRepository[entity.Organization]{
+		GormRepository: GormRepository[model.Organization]{
 			DB: db,
 		},
 	}
 }
 
-func (r *organizationRepository) UpdateStripeId(ctx context.Context, organization *entity.Organization, stripeId string) error {
+func (r *organizationRepository) UpdateStripeId(ctx context.Context, organization *model.Organization, stripeId string) error {
 	organization.StripeId = stripeId
 	if err := r.DB.WithContext(ctx).Select("StripeId").Updates(organization).Error; err != nil {
 		return err

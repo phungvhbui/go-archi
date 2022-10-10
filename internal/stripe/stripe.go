@@ -1,7 +1,8 @@
-package externalservice
+package stripe
 
 import (
 	"errors"
+
 	"github.com/rs/zerolog/log"
 )
 
