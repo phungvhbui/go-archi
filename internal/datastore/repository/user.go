@@ -1,21 +1,21 @@
 package repository
 
 import (
-	"github.com/phungvhbui/go-archi/internal/model/entity"
+	"github.com/phungvhbui/go-archi/internal/datastore/model"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Repository[entity.User]
+	Repository[model.User]
 }
 
 type userRepository struct {
-	GormRepository[entity.User]
+	GormRepository[model.User]
 }
 
 func NewUserRepository(db *gorm.DB) *userRepository {
 	return &userRepository{
-		GormRepository: GormRepository[entity.User]{
+		GormRepository: GormRepository[model.User]{
 			DB: db,
 		},
 	}

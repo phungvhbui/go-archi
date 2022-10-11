@@ -1,13 +1,15 @@
-package service
+package user
 
 import (
 	"context"
 	"errors"
-	"github.com/phungvhbui/go-archi/internal/externalservice"
+
+	"github.com/phungvhbui/go-archi/internal/datastore/model"
+	repo "github.com/phungvhbui/go-archi/internal/datastore/repository"
+	"github.com/phungvhbui/go-archi/internal/datastore/transaction"
 	"github.com/phungvhbui/go-archi/internal/mapper"
 	"github.com/phungvhbui/go-archi/internal/model/dto"
-	"github.com/phungvhbui/go-archi/internal/model/entity"
-	"github.com/phungvhbui/go-archi/internal/repository"
+	"github.com/phungvhbui/go-archi/internal/stripe"
 )
 
 type UserService interface {
@@ -16,12 +18,12 @@ type UserService interface {
 }
 
 type userService struct {
-	repository repository.UserRepository
-	transactor repository.Transactor
-	stripe     *externalservice.StripeService
+	repository repo.UserRepository
+	transactor transaction.Transactor
+	stripe     *stripe.StripeService
 }
 
-func NewUserService(repository repository.UserRepository, transactor repository.Transactor, stripe *externalservice.StripeService) *userService {
+func NewUserService(repository repo.UserRepository, transactor transaction.Transactor, stripe *stripe.StripeService) *userService {
 	return &userService{
 		repository: repository,
 		transactor: transactor,
@@ -35,7 +37,7 @@ func (s *userService) GetAll(ctx context.Context) ([]dto.UserDTO, error) {
 		return nil, err
 	}
 
-	dtos, err := mapper.MapList[entity.User, dto.UserDTO](entities)
+	dtos, err := mapper.MapList[model.User, dto.UserDTO](entities)
 	if err != nil {
 		return nil, err
 	}
@@ -51,19 +53,19 @@ func (s *userService) Create(ctx context.Context, request dto.UserDTO) (dto.User
 		errUpdateOrg    = errors.New("errUpdateOrg")
 	)
 
-	user, err := mapper.MapObject[dto.UserDTO, entity.User](request)
+	user, err := mapper.MapObject[dto.UserDTO, model.User](request)
 
-	err = s.transactor.Do(func(store repository.DataStore) error {
+	err = s.transactor.Do(func(store transaction.DataStore) error {
 		// Create user
 		err := store.UserRepository().Save(ctx, &user)
 		if err != nil {
 			return errCreateUser
 		}
 
-		organization := entity.Organization{
+		organization := model.Organization{
 			Name:   user.AccountUUID.String(),
 			IsUser: true,
-			Users: []entity.User{
+			Users: []model.User{
 				user,
 			},
 		}
@@ -97,7 +99,7 @@ func (s *userService) Create(ctx context.Context, request dto.UserDTO) (dto.User
 		return dto.UserDTO{}, err
 	}
 
-	userDTO, err := mapper.MapObject[entity.User, dto.UserDTO](user)
+	userDTO, err := mapper.MapObject[model.User, dto.UserDTO](user)
 	if err != nil {
 		return dto.UserDTO{}, err
 	}

@@ -1,10 +1,10 @@
-package connector
+package datastore
 
 import (
 	"fmt"
 	"strings"
 
-	"github.com/phungvhbui/go-archi/internal/model/entity"
+	"github.com/phungvhbui/go-archi/internal/datastore/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -35,8 +35,8 @@ func InitializeDB(
 	}
 
 	err = db.AutoMigrate(
-		&entity.Organization{},
-		&entity.User{},
+		&model.Organization{},
+		&model.User{},
 	)
 
 	if err != nil {

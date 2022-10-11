@@ -1,17 +1,16 @@
-package controller
+package organization
 
 import (
-	"github.com/phungvhbui/go-archi/internal/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type OrganizationController struct {
-	service service.OrganizationService
+	service OrganizationService
 }
 
-func NewOrganizationController(service service.OrganizationService) *OrganizationController {
+func NewOrganizationController(service OrganizationService) *OrganizationController {
 	return &OrganizationController{
 		service: service,
 	}
